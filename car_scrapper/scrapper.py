@@ -1,5 +1,5 @@
 
-from bs4 import BeautifulSoup, ResultSet
+from bs4 import BeautifulSoup, Tag
 import requests
 
 from typing import Type
@@ -25,9 +25,8 @@ def autoria_ads_scrap(search_url: str) -> list:
     return ads
 
 
-def autoria_ads_content_scrap(ads: Type[ResultSet]) -> list:
-    content = []
-    for ad in ads[:-1]:
-        content.append(ad.find('div', attrs={'class': "content-bar"}).find(attrs={'class': "content"}))
+def autoria_ad_content_scrap(ad: Type[Tag]) -> Type[Tag]:
+
+    content = ad.find('div', attrs={'class': "content-bar"}).find(attrs={'class': "content"})
 
     return content
