@@ -1,9 +1,10 @@
 
 import asyncio
 
-from __init__ import *
-from bot import bot
-from middleware import *
+from .bot import bot
+from .dispatcher import dispatcher
+from .middleware import *
+
 from db.session_maker import session_maker
 
 

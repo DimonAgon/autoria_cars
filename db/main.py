@@ -2,9 +2,9 @@
 import asyncio
 
 from sqlalchemy.ext.asyncio import async_sessionmaker
-from models import Base
+from .models import Base
 
-from engine import engine
+from .engine import engine
 
 async def main():
     async with engine.begin() as conn:
