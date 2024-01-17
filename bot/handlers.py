@@ -54,8 +54,8 @@ async def search_demand(message: types.Message, state: FSMContext, session: Asyn
 
         await session.merge(SearchDemand(search_href=message.text, target_chat_id=chat_id))
         await session.commit()
-        logging.info(search_demand_on_submission_success_logging_info_message)
-        await message.answer(search_demand_submission_success_chat_message.format(message_text, user_id, chat_id))
+        logging.info(search_demand_on_submission_success_logging_info_message.format(message_text, user_id, chat_id))
+        await message.answer(search_demand_submission_success_chat_message)
 
     except Exception as e:
         logging.error(e)
