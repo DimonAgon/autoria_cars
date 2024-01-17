@@ -12,8 +12,8 @@ class CarAd(Base):
     __tablename__ = 'Car_ad'
 
     id: Mapped[int] = mapped_column(sqlAl.Integer, primary_key=True)
-    external_id: Mapped[int] = mapped_column(sqlAl.Integer, unique=True)
-    source_href: Mapped[str] = mapped_column(sqlAl.VARCHAR(url_max_len))
+    external_id: Mapped[int] = mapped_column(sqlAl.Integer, unique=True) #TODO: set to an url-field
+    source_href: Mapped[str] = mapped_column(sqlAl.VARCHAR(url_max_len)) #TODO: set to an url-field
     pic_href: Mapped[str] = mapped_column(sqlAl.VARCHAR(url_max_len))
     model_name: Mapped[str] = mapped_column(sqlAl.VARCHAR(70))
     price_in_USD: Mapped[int] = mapped_column(sqlAl.Integer)
