@@ -1,11 +1,11 @@
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, ResultSet, Tag
 import requests
 
 from typing import Type
 
 
-def autoria_ads_scrap(search_url: str) -> list:
+def autoria_ads_scrap(search_url: str) -> Type[ResultSet]:
     ads = None
 
     page = 1
