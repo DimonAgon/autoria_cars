@@ -27,6 +27,7 @@ def autoria_ads_scrap(search_url: str) -> Type[ResultSet]:
 
 def autoria_ad_content_scrap(ad: Type[Tag]) -> Type[Tag]:
 
-    content = ad.find('div', attrs={'class': "content-bar"}).find(attrs={'class': "content"})
+    content = ad.find('div', attrs={'class': "content"})
 
     return content
+
