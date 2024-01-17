@@ -6,6 +6,8 @@ from aiogram import types
 from bot import bot
 from static_text import *
 
+import re
+
 
 class IsAdminFilter(BaseFilter):
     key = 'is_admin'
@@ -27,3 +29,10 @@ class IsAdminFilter(BaseFilter):
             logging.error(is_admin_authorization_failure_logging_info_message.format(user_id))
             await message.answer(is_admin_authorization_failure_chat_message)
             return False
+
+
+class NoCommandFilter(BaseFilter):
+    async def __call__(self, message: types.Message) -> bool:
+        command_pattern_compiled = re.compile('\/.*')
+
+        return not command_pattern_compiled.fullmatch(message.text)
