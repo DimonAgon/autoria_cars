@@ -41,8 +41,7 @@ async def search_demand(message: types.Message, state: FSMContext, session: Asyn
             await message.answer(autoria_search_url_authenticity_validation_success_chat_message)
 
         else:
-            await message.answer(autoria_search_url_authenticity_validation_failure_chat_message.format(
-                message_text, user_id, chat_id))
+            await message.answer(autoria_search_url_authenticity_validation_failure_chat_message)
             return
 
         if validate_autoria_search_url_points_on_real_source(message_text):
