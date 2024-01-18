@@ -19,7 +19,7 @@ def autoria_ads_scrap(search_url: str) -> Type[ResultSet]:
         if ads is None:
             ads = page_ads
 
-        ads.append(page_ads)
+        ads.extend(page_ads)
         page += 1
 
     return ads
@@ -30,4 +30,3 @@ def autoria_ad_content_scrap(ad: Type[Tag]) -> Type[Tag]:
     content = ad.find('div', attrs={'class': "content"})
 
     return content
-
