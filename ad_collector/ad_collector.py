@@ -26,7 +26,7 @@ async def collect(search_url: str, session: AsyncSession) -> list[Base]:
         in_db_query = select(CarAd).where(CarAd.external_id == external_id)
         in_db = (await session.execute(in_db_query)).scalar()
         if in_db:
-            logging.info(in_db_check_True_logging_info_message.format(in_db.__repr__))
+            logging.info(in_db_check_True_logging_info_message.format(f"{type(in_db)}{in_db.__repr__()}"))
 
         else:
             logging.info(in_db_check_False_logging_info_message.format

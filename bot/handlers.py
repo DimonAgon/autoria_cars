@@ -58,11 +58,11 @@ async def search_demand(message: types.Message, state: FSMContext, session: Asyn
                                    SearchDemand.target_chat_id == demand_attrs['target_chat_id'])
         in_db = (await session.execute(in_db_query)).scalar()
         if not in_db:
-            logging.info(in_db_check_False_logging_info_message.format(in_db.__repr__()))
+            logging.info(in_db_check_False_logging_info_message.format(f"{type(in_db)}{in_db.__repr__()}"))
             await message.answer(not_in_db_validation_success_chat_message)
 
         else:
-            logging.info(in_db_check_True_logging_info_message.format(in_db.__repr__()))
+            logging.info(in_db_check_True_logging_info_message.format(f"{type(in_db)}{in_db.__repr__()}"))
             await message.answer(not_in_db_validation_failure_chat_message)
             return
 
