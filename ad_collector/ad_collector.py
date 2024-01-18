@@ -11,12 +11,12 @@ from static_text import *
 
 @session_delivery.deliver_session
 async def collect(search_url: str, session: AsyncSession) -> list[Base]:
-    ads: Type[ResultSet] = autoria_ads_scrap(search_url)
+    ads: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(search_url)
     unique = []
 
     for ad in ads:
         external_id = ad['data-advertisement-id']
-        content = autoria_ad_content_scrap(ad)
+        content = AutoriaCarScrapper.autoria_ad_content_scrap(ad)
         clickOn_ad_link = content.find('a', attrs={'class': "address"})
         model_name = clickOn_ad_link.find('span', attrs={'class': "blue bold"}).text.strip()
         source_href = clickOn_ad_link['href']
