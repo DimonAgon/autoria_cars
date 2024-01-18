@@ -10,6 +10,7 @@ from .validators import *
 from .filters import *
 from db.models import *
 from static_text import *
+from ad_transmitter import ad_transmitter
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -65,8 +66,11 @@ async def search_demand(message: types.Message, state: FSMContext, session: Asyn
             await message.answer(not_in_db_validation_failure_chat_message)
             return
 
-        await session.merge(SearchDemand(**demand_attrs))
+        new_demand = SearchDemand(**demand_attrs)
+        await session.merge(new_demand)
         await session.commit()
+        await ad_transmitter.transmit(new_demand)
+        await message.answer(on_search_demand_ad_transmission_initiated_chat_message)
         logging.info(search_demand_on_submission_success_logging_info_message.format(message_text, user_id, chat_id))
         await message.answer(search_demand_submission_success_chat_message)
 

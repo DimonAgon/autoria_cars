@@ -10,13 +10,12 @@ def set_all_middleware():
     dispatcher.update.middleware(DbSessionMiddleware())
 
 async def deploy_bot():
+    set_all_middleware()
     await dispatcher.start_polling(bot)
     await dispatcher.stop
     await bot.session.close()
 
 def main():
-
-    set_all_middleware()
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)

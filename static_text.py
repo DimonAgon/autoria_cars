@@ -11,6 +11,7 @@ autoria_search_url_points_on_real_source_validation_failure_chat_message = "auto
 not_in_db_validation_success_chat_message = "object not-in-db validation successful"
 not_in_db_validation_failure_chat_message = "object not-in-db validation failed"
 is_admin_authorization_failure_chat_message = "is-admin authorization failed"
+on_search_demand_ad_transmission_initiated_chat_message = "on demand ad-transmission initiated"
 #c̶h̶a̶t̶ ̶m̶e̶s̶s̶a̶g̶e̶s̶
 
 #logging
@@ -26,5 +27,6 @@ in_db_check_True_logging_info_message = "object {} in-db check True"
 in_db_check_False_logging_info_message = "object {} in-db check False"
 is_admin_authorization_success_logging_info_message = "user {} is-admin authorization successful at {}"
 is_admin_authorization_failure_logging_info_message = "user {} is-admin authorization failed at {}"
+on_search_demand_ad_transmission_initiated_logging_info_message = "{} demand ad-transmission initiated"
 #l̶o̶g̶g̶i̶n̶g̶
 
