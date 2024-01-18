@@ -1,10 +1,16 @@
 
 import requests
 
+from sqlalchemy import select
+
 from static_text import *
 from re_patterns import autoria_authentic_search_url_re_pattern
 
+from db.session_maker import session_maker
+
 import logging
+
+from typing import Type
 
 
 def validate_autoria_search_url_is_authentic(search_url: str) -> bool:
@@ -32,3 +38,9 @@ def validate_autoria_search_url_points_on_real_source(search_url: str) -> bool:
         logging.error(autoria_search_url_points_on_real_source_validation_failure_logging_error_message.format(search_url))
 
     return response_success_status
+
+
+#TODO: add a in-db-check
+
+
+

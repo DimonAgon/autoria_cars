@@ -12,6 +12,7 @@ from db.models import *
 from static_text import *
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 import logging
 
@@ -52,10 +53,23 @@ async def search_demand(message: types.Message, state: FSMContext, session: Asyn
                 message_text, user_id, chat_id))
             return
 
-        await session.merge(SearchDemand(SearchDemand(search_href=message.text, target_chat_id=chat_id)))
+        demand_attrs = {'search_href': message_text, 'target_chat_id': chat_id}
+        in_db_query = select(SearchDemand).where(SearchDemand.search_href == demand_attrs['search_href'],
+                                   SearchDemand.target_chat_id == demand_attrs['target_chat_id'])
+        in_db = (await session.execute(in_db_query)).scalar()
+        if not in_db:
+            logging.info(in_db_check_False_logging_info_message)
+            await message.answer(not_in_db_validation_success_chat_message)
+
+        else:
+            logging.info(in_db_check_True_logging_info_message)
+            await message.answer(not_in_db_validation_failure_chat_message)
+            return
+
+        await session.merge(SearchDemand(**demand_attrs))
         await session.commit()
-        logging.info(search_demand_on_submission_success_logging_info_message)
-        await message.answer(search_demand_submission_success_chat_message.format(message_text, user_id, chat_id))
+        logging.info(search_demand_on_submission_success_logging_info_message.format(message_text, user_id, chat_id))
+        await message.answer(search_demand_submission_success_chat_message)
 
     except Exception as e:
         logging.error(e)
