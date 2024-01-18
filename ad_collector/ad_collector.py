@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from car_scrapper.scrapper import *
 from db.models import *
 from db.session_delivery import session_delivery
+from checkers import *
 from static_text import *
 
 
@@ -24,11 +25,7 @@ async def collect(search_url: str, session: AsyncSession) -> list[Base]:
         price_in_USD = content.find('span', attrs={'class': "bold size22 green"}).text.replace(" ", "")
 
         in_db_query = select(CarAd).where(CarAd.external_id == external_id)
-        in_db = (await session.execute(in_db_query)).scalar()
-        if in_db:
-            logging.info(in_db_check_True_logging_info_message.format(f"{type(in_db)}{in_db.__repr__()}"))
-
-        else:
+        if not await in_db_checker(in_db_query):
             logging.info(in_db_check_False_logging_info_message.format
                          (
                 f"external_id={external_id},"
@@ -37,6 +34,7 @@ async def collect(search_url: str, session: AsyncSession) -> list[Base]:
                 f" model_name={model_name},"
                 f" price_in_USD={price_in_USD})")
             )
+
             new_ad = (CarAd
                 (
                 external_id=external_id,

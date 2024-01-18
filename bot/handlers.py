@@ -7,6 +7,7 @@ from aiogram import types
 from .bot import bot
 from .dispatcher import dispatcher, demands_router
 from .validators import *
+from checkers import *
 from .filters import *
 from db.models import *
 from static_text import *
@@ -56,13 +57,10 @@ async def search_demand(message: types.Message, state: FSMContext, session: Asyn
         demand_attrs = {'search_href': message_text, 'target_chat_id': chat_id}
         in_db_query = select(SearchDemand).where(SearchDemand.search_href == demand_attrs['search_href'],
                                    SearchDemand.target_chat_id == demand_attrs['target_chat_id'])
-        in_db = (await session.execute(in_db_query)).scalar()
-        if not in_db:
-            logging.info(in_db_check_False_logging_info_message.format(f"{type(in_db)}{in_db.__repr__()}"))
+        if not await in_db_checker(in_db_query):
             await message.answer(not_in_db_validation_success_chat_message)
 
         else:
-            logging.info(in_db_check_True_logging_info_message.format(f"{type(in_db)}{in_db.__repr__()}"))
             await message.answer(not_in_db_validation_failure_chat_message)
             return
 
