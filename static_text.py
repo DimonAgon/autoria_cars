@@ -8,6 +8,8 @@ autoria_search_url_authenticity_validation_success_chat_message = "autoria-searc
 autoria_search_url_authenticity_validation_failure_chat_message = "autoria-search-url authenticity validation failed"
 autoria_search_url_points_on_real_source_validation_success_chat_message = "autoria-search-url points-on-real-source validation successful"
 autoria_search_url_points_on_real_source_validation_failure_chat_message = "autoria search url points-on-real-source validation failed"
+not_in_db_validation_success_chat_message = "object not-in-db validation successful"
+not_in_db_validation_failure_chat_message = "object not-in-db validation failed"
 is_admin_authorization_failure_chat_message = "is-admin authorization failed"
 #c̶h̶a̶t̶ ̶m̶e̶s̶s̶a̶g̶e̶s̶
 
@@ -20,6 +22,8 @@ autoria_search_url_authenticity_validation_success_logging_info_message = "{} au
 autoria_search_url_authenticity_validation_failure_logging_error_message = "{} autoria-search-url authenticity validation failed"
 autoria_search_url_points_on_real_source_validation_success_logging_info_message = "{} autoria-search-url points-on-real-source validation successful"
 autoria_search_url_points_on_real_source_validation_failure_logging_error_message = "{} autoria-search-url points-on-real-source validation failed"
+in_db_check_True_logging_info_message = "object {} in-db check True"
+in_db_check_False_logging_info_message = "object {} in-db check False"
 is_admin_authorization_success_logging_info_message = "user {} is-admin authorization successful at {}"
 is_admin_authorization_failure_logging_info_message = "user {} is-admin authorization failed at {}"
 #l̶o̶g̶g̶i̶n̶g̶
