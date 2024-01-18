@@ -1,7 +1,6 @@
 
 import asyncio
 
-from sqlalchemy.ext.asyncio import async_sessionmaker
 from .models import Base
 
 from .engine import engine

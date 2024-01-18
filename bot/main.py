@@ -5,11 +5,9 @@ from .bot import bot
 from .dispatcher import dispatcher
 from .middleware import *
 
-from db.session_maker import session_maker
-
 
 def set_all_middleware():
-    dispatcher.update.middleware(DbSessionMiddleware(session_pool=session_maker))
+    dispatcher.update.middleware(DbSessionMiddleware())
 
 async def deploy_bot():
     await dispatcher.start_polling(bot)
