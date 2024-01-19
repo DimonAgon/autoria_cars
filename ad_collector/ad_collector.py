@@ -2,6 +2,7 @@ import logging
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import inspect
 
 from car_scrapper.scrapper import *
 from db.models import *
@@ -11,7 +12,9 @@ from misc.static_text import *
 
 
 @session_delivery.deliver_session
-async def collect(search_url: str, session: AsyncSession) -> list[Base]:
+async def collect(demand: Type[SearchDemand], session: AsyncSession) -> list[Base]:
+    search_url = demand.search_href
+
     ads: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(search_url)
     unique = []
 
@@ -24,7 +27,7 @@ async def collect(search_url: str, session: AsyncSession) -> list[Base]:
         pic_href = "https://bidfax.info/" + "/".join(model_name.split())
         price_in_USD = content.find('span', attrs={'class': "bold size22 green"}).text.replace(" ", "")
 
-        in_db_query = select(CarAd).where(CarAd.external_id == external_id)
+        in_db_query = select(CarAd).where(CarAd.external_id == external_id, )
         if not await in_db_checker(in_db_query):
             logging.info(in_db_check_False_logging_info_message.format
                          (
@@ -35,18 +38,29 @@ async def collect(search_url: str, session: AsyncSession) -> list[Base]:
                 f" price_in_USD={price_in_USD})")
             )
 
-            new_ad = (CarAd
+            ad = (CarAd
                 (
-                external_id=external_id,
-                model_name=model_name  ,
-                source_href=source_href,
-                pic_href=pic_href      ,
-                price_in_USD=price_in_USD)
+                external_id=external_id  ,
+                model_name=model_name    ,
+                source_href=source_href  ,
+                pic_href=pic_href        ,
+                price_in_USD=price_in_USD,
+                bonded_search_demands=[demand])
             )
 
-            await session.merge(new_ad)
+            await session.merge(ad)
             await session.commit()
-            unique.append(new_ad)
+            unique.append(ad)
+
+        else:
+            ad = (await session.execute(in_db_query)).scalar()
+
+            if not (demand.search_href, demand.target_chat_id)\
+                   in\
+                   ((d.search_href, d.target_chat_id) for d in ad.bonded_search_demands):
+                unique.append(ad)
+                ad.bonded_search_demands.append(demand)
+                await session.commit()
 
     return unique
 
