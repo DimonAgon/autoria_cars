@@ -7,10 +7,10 @@ from aiogram import types
 from .bot import bot
 from .dispatcher import dispatcher, demands_router
 from .validators import *
-from checkers import *
+from misc.checkers import *
 from .filters import *
 from db.models import *
-from static_text import *
+from misc.static_text import *
 from ad_transmitter import ad_transmitter
 
 from sqlalchemy.ext.asyncio import AsyncSession

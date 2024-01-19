@@ -4,7 +4,7 @@ from aiogram.filters import BaseFilter
 from aiogram import types
 
 from bot import bot
-from static_text import *
+from misc.static_text import *
 
 import re
 

@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from car_scrapper.scrapper import *
 from db.models import *
 from db.session_delivery import session_delivery
-from checkers import *
-from static_text import *
+from misc.checkers import *
+from misc.static_text import *
 
 
 @session_delivery.deliver_session

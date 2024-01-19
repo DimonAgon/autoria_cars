@@ -9,7 +9,7 @@ from ad_collector import ad_collector
 from bot.ad_transmitter import bot_transmitter_handlers
 from db.session_delivery import session_delivery
 from db.models import *
-from static_text import *
+from misc.static_text import *
 
 from typing import Type, List
 
