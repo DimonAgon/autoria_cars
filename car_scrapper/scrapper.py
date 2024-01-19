@@ -22,7 +22,9 @@ class AutoriaCarScrapper:
             if ads is None:
                 ads = page_ads
 
-            ads.extend(page_ads)
+            else:
+                ads.extend(page_ads)
+
             page += 1
 
         return ads
