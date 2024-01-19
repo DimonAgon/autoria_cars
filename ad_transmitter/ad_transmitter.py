@@ -15,12 +15,11 @@ from typing import Type, List
 
 
 async def advertise(demand: Type[SearchDemand]):
-    search_url = demand.search_href
     target_chat_id = demand.target_chat_id
 
     while True:
         await asyncio.sleep(1)
-        fresh_ads = await ad_collector.collect(search_url)
+        fresh_ads = await ad_collector.collect(demand)
 
         for ad in fresh_ads:
             await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id)
