@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.session_delivery import session_delivery
 from db.models import *
-from static_text import *
+from misc.static_text import *
 
 from typing import Type
 
