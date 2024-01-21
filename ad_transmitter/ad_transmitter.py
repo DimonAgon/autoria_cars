@@ -33,7 +33,7 @@ async def advertise(demand: Type[SearchDemand]):
 
     while True:
         await asyncio.sleep(1)
-        fresh_ads = await ad_collector.collect_fresh()
+        fresh_ads = await ad_collector.collect()
 
         for ad in fresh_ads:
             await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id)
