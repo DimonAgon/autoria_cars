@@ -18,13 +18,13 @@ def unique_demands(demands: Iterable[Type[SearchDemand]]):
     unique = []
     unique_values = []
     for demand in demands:
-        values = (demand.search_href, demand.target_chat_id)
+        unpacked_demand, *_ = demand
+        values = (unpacked_demand.search_href, unpacked_demand.target_chat_id)
         if values not in unique_values:
-            unique.append(demand)
+            unique.append(unpacked_demand)
             unique_values.append(values)
 
     return unique
-
 
 
 async def advertise(demand: Type[SearchDemand]):
@@ -33,7 +33,7 @@ async def advertise(demand: Type[SearchDemand]):
 
     while True:
         await asyncio.sleep(1)
-        fresh_ads = await ad_collector.collect()
+        fresh_ads = await ad_collector.collect_fresh()
 
         for ad in fresh_ads:
             await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id)
@@ -46,7 +46,7 @@ async def initial_transmit(session: AsyncSession):
     get_all_demands_query = select(SearchDemand)
     demands: List[Type[CarAd]] = (await session.execute(get_all_demands_query)).all()
     for demand in unique_demands(demands):
-        loop.create_task(advertise(*demand))
+        loop.create_task(advertise(demand))
         logging.info(on_search_demand_ad_transmission_initiated_logging_info_message.format(demand.__repr__()))
 
 
