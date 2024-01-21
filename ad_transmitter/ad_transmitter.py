@@ -37,7 +37,7 @@ class Advertiser:
         ad_collector = self.ad_collector
 
         while True:
-            await asyncio.sleep(1)
+            await asyncio.sleep(600)
             fresh_ads = await ad_collector.collect_fresh()
             deleted_ads = await ad_collector.collect_deleted()
 
