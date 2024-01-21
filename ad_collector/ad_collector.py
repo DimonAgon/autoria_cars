@@ -10,6 +10,7 @@ from db.session_delivery import session_delivery
 from misc.checkers import *
 from misc.static_text import *
 
+from typing import Type, List
 
 
 class AdCollector:
@@ -19,7 +20,7 @@ class AdCollector:
         self.search_url = demand.search_href
 
     @session_delivery.deliver_session
-    async def collect(self, session: AsyncSession) -> list[Base]:
+    async def collect_fresh(self, session: AsyncSession) -> list[Base]:
 
         ads: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(self.search_url)
         unique = []
@@ -69,4 +70,37 @@ class AdCollector:
                     await session.commit()
 
         return unique
+
+
+    @session_delivery.deliver_session
+    async def bonded_ads(self, session: AsyncSession):
+        result = []
+
+        all_demands_query = select(SearchDemand)
+        all_demands = (await session.execute(all_demands_query)).all()
+        values = (self.search_url, self.demand.target_chat_id)
+        for demand in all_demands:
+            demand_unpacked, *_ = demand
+            if values == (demand_unpacked.search_href, demand_unpacked.target_chat_id):
+                if bonded_cars:=demand_unpacked.bonded_car_ads:
+                    result.append(*bonded_cars)
+
+        return result
+
+    async def collect_deleted(self) -> List[Type[CarAd]]:
+        deleted = []
+
+        ad_tags: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(self.search_url)
+
+        for ad in await self.bonded_ads():
+            is_depleted = None
+            for tag in ad_tags:
+                if ad.external_id == int(tag['data-advertisement-id']):
+                    is_depleted = False
+                    break
+
+            if is_depleted:
+                deleted.append(ad)
+
+        return deleted
 

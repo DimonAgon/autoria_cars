@@ -34,10 +34,13 @@ async def advertise(demand: Type[SearchDemand]):
     while True:
         await asyncio.sleep(1)
         fresh_ads = await ad_collector.collect_fresh()
+        deleted_ads = await ad_collector.collect_deleted()
 
         for ad in fresh_ads:
             await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id)
 
+        for ad in deleted_ads:
+            await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id, deleted=True)
 
 @session_delivery.deliver_session
 async def initial_transmit(session: AsyncSession):
