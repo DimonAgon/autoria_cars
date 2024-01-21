@@ -11,7 +11,20 @@ from db.session_delivery import session_delivery
 from db.models import *
 from misc.static_text import *
 
-from typing import Type, List
+from typing import Type, List, Iterable
+
+
+def unique_demands(demands: Iterable[Type[SearchDemand]]):
+    unique = []
+    unique_values = []
+    for demand in demands:
+        values = (demand.search_href, demand.target_chat_id)
+        if values not in unique_values:
+            unique.append(demand)
+            unique_values.append(values)
+
+    return unique
+
 
 
 async def advertise(demand: Type[SearchDemand]):
@@ -31,7 +44,7 @@ async def initial_transmit(session: AsyncSession):
 
     get_all_demands_query = select(SearchDemand)
     demands: List[Type[CarAd]] = (await session.execute(get_all_demands_query)).all()
-    for demand in demands:
+    for demand in unique_demands(demands):
         loop.create_task(advertise(*demand))
         logging.info(on_search_demand_ad_transmission_initiated_logging_info_message.format(demand.__repr__()))
 
