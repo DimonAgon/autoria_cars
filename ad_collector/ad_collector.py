@@ -57,7 +57,7 @@ async def collect(demand: Type[SearchDemand], session: AsyncSession) -> list[Bas
 
             if not (demand.search_href, demand.target_chat_id)\
                    in \
-                   ((d.search_href, d.target_chat_id) for d in ad.bonded_search_demands):
+                   [(d.search_href, d.target_chat_id) for d in ad.bonded_search_demands]:
                 unique.append(ad)
                 ad.bonded_search_demands.append(demand)
                 await session.commit()
