@@ -37,7 +37,6 @@ class Advertiser:
         ad_collector = self.ad_collector
 
         while True:
-            await asyncio.sleep(600)
             fresh_ads = await ad_collector.collect_fresh()
             deleted_ads = await ad_collector.collect_deleted()
             repriced_ads = await ad_collector.collect_repriсed()
@@ -50,6 +49,9 @@ class Advertiser:
 
             for ad in repriced_ads:
                 await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id, repriced=True)
+
+            await asyncio.sleep(600)
+
 
 @session_delivery.deliver_session
 async def initial_transmit(session: AsyncSession):
