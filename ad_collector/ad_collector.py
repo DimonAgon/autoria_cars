@@ -11,58 +11,62 @@ from misc.checkers import *
 from misc.static_text import *
 
 
-@session_delivery.deliver_session
-async def collect(demand: Type[SearchDemand], session: AsyncSession) -> list[Base]:
-    search_url = demand.search_href
 
-    ads: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(search_url)
-    unique = []
+class AdCollector:
 
-    for ad in ads:
-        external_id = ad['data-advertisement-id']
-        content = AutoriaCarScrapper.autoria_ad_content_scrap(ad)
-        clickOn_ad_link = content.find('a', attrs={'class': "address"})
-        model_name = clickOn_ad_link.find('span', attrs={'class': "blue bold"}).text.strip()
-        source_href = clickOn_ad_link['href']
-        pic_href = "https://bidfax.info/" + "/".join(model_name.split())
-        price_in_USD = content.find('span', attrs={'class': "bold size22 green"}).text.replace(" ", "")
+    def __init__(self, demand: Type[SearchDemand]):
+        self.demand = demand
+        self.search_url = demand.search_href
 
-        in_db_query = select(CarAd).where(CarAd.external_id == external_id, )
-        if not await in_db_checker(in_db_query):
-            logging.info(in_db_check_False_logging_info_message.format
-                         (
-                f"external_id={external_id},"
-                f" source_href={source_href},"
-                f" pic_href={pic_href},"
-                f" model_name={model_name},"
-                f" price_in_USD={price_in_USD})")
-            )
+    @session_delivery.deliver_session
+    async def collect(self, session: AsyncSession) -> list[Base]:
 
-            ad = (CarAd
-                (
-                external_id=external_id  ,
-                model_name=model_name    ,
-                source_href=source_href  ,
-                pic_href=pic_href        ,
-                price_in_USD=price_in_USD,
-                bonded_search_demands=[demand])
-            )
+        ads: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(self.search_url)
+        unique = []
 
-            await session.merge(ad)
-            await session.commit()
-            unique.append(ad)
+        for ad in ads:
+            external_id = ad['data-advertisement-id']
+            content = AutoriaCarScrapper.autoria_ad_content_scrap(ad)
+            clickOn_ad_link = content.find('a', attrs={'class': "address"})
+            model_name = clickOn_ad_link.find('span', attrs={'class': "blue bold"}).text.strip()
+            source_href = clickOn_ad_link['href']
+            pic_href = "https://bidfax.info/" + "/".join(model_name.split())
+            price_in_USD = content.find('span', attrs={'class': "bold size22 green"}).text.replace(" ", "")
 
-        else:
-            ad = (await session.execute(in_db_query)).scalar()
+            in_db_query = select(CarAd).where(CarAd.external_id == external_id, )
+            if not await in_db_checker(in_db_query):
+                logging.info(in_db_check_False_logging_info_message.format
+                             (
+                    f"external_id={external_id},"
+                    f" source_href={source_href},"
+                    f" pic_href={pic_href},"
+                    f" model_name={model_name},"
+                    f" price_in_USD={price_in_USD})")
+                )
 
-            if not (demand.search_href, demand.target_chat_id)\
-                   in \
-                   [(d.search_href, d.target_chat_id) for d in ad.bonded_search_demands]:
-                unique.append(ad)
-                ad.bonded_search_demands.append(demand)
+                ad = (CarAd
+                    (
+                    external_id=external_id  ,
+                    model_name=model_name    ,
+                    source_href=source_href  ,
+                    pic_href=pic_href        ,
+                    price_in_USD=price_in_USD,
+                    bonded_search_demands=[self.demand])
+                )
+
+                await session.merge(ad)
                 await session.commit()
+                unique.append(ad)
 
-    return unique
+            else:
+                ad = (await session.execute(in_db_query)).scalar()
 
+                if not (self.demand.search_href, self.demand.target_chat_id)\
+                       in \
+                       [(d.search_href, d.target_chat_id) for d in ad.bonded_search_demands]:
+                    unique.append(ad)
+                    ad.bonded_search_demands.append(self.demand)
+                    await session.commit()
 
+        return unique
 

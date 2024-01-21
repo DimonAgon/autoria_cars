@@ -5,7 +5,7 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ad_collector import ad_collector
+from ad_collector.ad_collector import AdCollector
 from bot.ad_transmitter import bot_transmitter_handlers
 from db.session_delivery import session_delivery
 from db.models import *
@@ -29,10 +29,11 @@ def unique_demands(demands: Iterable[Type[SearchDemand]]):
 
 async def advertise(demand: Type[SearchDemand]):
     target_chat_id = demand.target_chat_id
+    ad_collector = AdCollector(demand)
 
     while True:
         await asyncio.sleep(1)
-        fresh_ads = await ad_collector.collect(demand)
+        fresh_ads = await ad_collector.collect()
 
         for ad in fresh_ads:
             await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id)
