@@ -34,7 +34,7 @@ class Advertiser:
         self.ad_collector = AdCollector(demand)
     async def advertise(self):
         target_chat_id = self.target_chat_id
-        ad_collector = AdCollector(self.demand)
+        ad_collector = self.ad_collector
 
         while True:
             await asyncio.sleep(1)
