@@ -83,7 +83,7 @@ class AdCollector:
             demand_unpacked, *_ = demand
             if values == (demand_unpacked.search_href, demand_unpacked.target_chat_id):
                 if bonded_cars:=demand_unpacked.bonded_car_ads:
-                    result.append(*bonded_cars)
+                    result.extend(bonded_cars)
 
         return result
 
