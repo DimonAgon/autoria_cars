@@ -11,6 +11,7 @@ from misc.checkers import *
 from misc.static_text import *
 
 from typing import Type, List
+from bs4 import Tag, ResultSet
 
 
 class AdCollector:
@@ -87,20 +88,43 @@ class AdCollector:
 
         return result
 
+    def find_tag_sibling_to_car_ad(self, ad: Type[CarAd]) -> Type[Tag]:
+        ad_tags: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(self.search_url)
+
+        for tag in ad_tags:
+            if ad.external_id == int(tag['data-advertisement-id']):
+                return tag
+
     async def collect_deleted(self) -> List[Type[CarAd]]:
         deleted = []
 
-        ad_tags: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(self.search_url)
-
         for ad in await self.bonded_ads():
             is_depleted = None
-            for tag in ad_tags:
-                if ad.external_id == int(tag['data-advertisement-id']):
-                    is_depleted = False
-                    break
+            if self.find_tag_sibling_to_car_ad(ad):
+                is_depleted = False
 
             if is_depleted:
                 deleted.append(ad)
 
         return deleted
+
+
+    @session_delivery.deliver_session
+    async def collect_repriсed(self, session: AsyncSession) -> List[Type[CarAd]]:
+        repriced = []
+
+        ad_tags: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(self.search_url)
+
+        for ad in await self.bonded_ads():
+            tag_ad = self.find_tag_sibling_to_car_ad(ad)
+            current_price = int(tag_ad.find('span', attrs={'class': "bold size22 green"}).text.replace(" ", ""))
+            if not ad.price_in_USD == current_price:
+                repriced.append(ad)
+                ad.price_in_USD = current_price
+                await session.commit()
+
+        return repriced
+
+
+
 
