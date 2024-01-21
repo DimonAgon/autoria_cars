@@ -20,7 +20,7 @@ class AdCollector:
         self.search_url = demand.search_href
 
     @session_delivery.deliver_session
-    async def collect_fresh(self, session: AsyncSession) -> list[Base]:
+    async def collect_fresh(self, session: AsyncSession) -> List[Type[CarAd]]:
 
         ads: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(self.search_url)
         unique = []
