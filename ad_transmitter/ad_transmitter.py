@@ -48,7 +48,7 @@ class Advertiser:
                 await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id, deleted=True)
 
             for ad in repriced_ads:
-                await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id, repriced=True)
+                await bot_transmitter_handlers.send_chat_ad(ad, target_chat_id)
 
             await asyncio.sleep(600)
 
