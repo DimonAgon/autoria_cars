@@ -3,8 +3,8 @@ import requests
 
 from sqlalchemy import select
 
-from static_text import *
-from re_patterns import autoria_authentic_search_url_re_pattern
+from misc.static_text import *
+from misc.re_patterns import autoria_authentic_search_url_re_pattern
 
 from db.session_maker import session_maker
 
