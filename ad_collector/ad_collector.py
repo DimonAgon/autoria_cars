@@ -119,9 +119,9 @@ class AdCollector:
             tag_ad = self.find_tag_sibling_to_car_ad(ad)
             current_price = int(tag_ad.find('span', attrs={'class': "bold size22 green"}).text.replace(" ", ""))
             if not ad.price_in_USD == current_price:
-                repriced.append(ad)
                 in_db = await session.get(CarAd, ad.id)
                 in_db.price_in_USD = current_price
+                repriced.append(in_db)
                 await session.commit()
 
         return repriced
