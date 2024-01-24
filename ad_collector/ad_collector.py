@@ -99,12 +99,10 @@ class AdCollector:
         deleted = []
 
         for ad in await self.bonded_ads():
-            is_depleted = None
             if self.find_tag_sibling_to_car_ad(ad):
-                is_depleted = False
+                continue
 
-            if is_depleted:
-                deleted.append(ad)
+            deleted.append(ad)
 
         return deleted
 
