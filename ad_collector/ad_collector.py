@@ -111,8 +111,6 @@ class AdCollector:
     async def collect_repriсed(self, session: AsyncSession) -> List[Type[CarAd]]:
         repriced = []
 
-        ad_tags: Type[ResultSet] = AutoriaCarScrapper.autoria_ads_scrap(self.search_url)
-
         for ad in await self.bonded_ads():
             tag_ad = self.find_tag_sibling_to_car_ad(ad)
             current_price = int(tag_ad.find('span', attrs={'class': "bold size22 green"}).text.replace(" ", ""))
